@@ -1,0 +1,23 @@
+《弦間小日子》Studio Edition — 安裝方式
+
+這份 ZIP 的檔案已放在最外層，方便用 iPhone 解壓縮後直接選取。
+
+【網站檔案：上傳 GitHub】
+1. 前往 https://github.com/feifei92525/xianjian-test
+2. 上傳並覆蓋根目錄的 index.html、styles.css、app.js。
+3. GitHub Pages 已啟用時，等部署完成後開啟：
+   https://feifei92525.github.io/xianjian-test/
+4. 若仍看到舊版，重新整理 Safari 或在網址最後加上 ?v=studio。
+
+【雙人雲端功能：設定 Supabase】
+詳見 README_安裝說明.txt，須由管理員執行 supabase-upgrade.sql 並設定師生配對。
+不要將 SQL 上傳 GitHub 期待它自動執行。
+
+【已包含的頁面】
+首頁、每日練習、練習紀錄、歌曲研究、雙人聯絡簿、學生筆記、老師筆記、每週挑戰、好寶寶印章、16 堂課程、練習計時、節拍器、音階與琶音、Bass 指板、成長統計、帳號與備份。
+
+【請留意】
+- 這是可部署的整合版程式，不代表已完成兩個真實帳號的端對端測試。
+- 原本 bass-journey 網站不會因為上傳到 xianjian-test 而被改動。
+- 本機舊版資料不會自動搬到雲端；先備份舊資料。
+- 介面首頁顯示的是登入後實際讀取的數值，沒有預設的假練習時數。
