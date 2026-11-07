@@ -1,0 +1,30 @@
+'use strict';
+/* Auto sync for the three new local modules; original practice/teacher tables untouched.
+   Each JSON leaf is an independent row. Different fields merge; same field last server write wins. */
+(()=>{
+ const TABLE='learning_sync_fields', POLL=12000;
+ const specs=[['study',()=>studyKey(),()=>studyRead(),x=>studyWrite(x)],['planner',()=>xpKey(),()=>xpRead(),x=>xpSave(x)],['bass',()=>bgKey(),()=>bgRead(),x=>bgSave(x)]];
+ const state={uid:null,ready:false,busy:false,queue:new Map(),known:new Map(),timer:null,writing:false,errors:0};
+ const own=Object.prototype.hasOwnProperty;
+ const flat=(value,path=[],out=new Map())=>{if(value&&typeof value==='object'&&!Array.isArray(value)){const keys=Object.keys(value);if(!keys.length&&path.length)out.set(JSON.stringify(path),{});else keys.forEach(k=>flat(value[k],[...path,k],out))}else if(path.length)out.set(JSON.stringify(path),value);return out};
+ const set=(obj,path,val)=>{let p=obj;for(let i=0;i<path.length-1;i++){const k=path[i];if(!p[k]||typeof p[k]!=='object'||Array.isArray(p[k]))p[k]={};p=p[k]}p[path[path.length-1]]=val};
+ const current=()=>typeof user!=='undefined'&&user?.id||null;
+ const status=(msg)=>{let el=document.getElementById('autoSyncStatus');if(el)el.textContent=msg};
+ const capture=(ns,before,after)=>{if(state.writing||!state.uid||!state.ready)return;const a=flat(before),b=flat(after);for(const [key,value] of b){if(!a.has(key)||JSON.stringify(a.get(key))!==JSON.stringify(value))state.queue.set(ns+'|'+key,{namespace:ns,path_key:key,value})}status('☁️ 等待同步…');schedule()};
+ const orig=[studyWrite,xpSave,bgSave];
+ studyWrite=function(x){const before=studyRead();const ok=orig[0](x);if(ok)capture('study',before,x);return ok};
+ xpSave=function(x){const before=xpRead();const ok=orig[1](x);if(ok)capture('planner',before,x);return ok};
+ bgSave=function(x){const before=bgRead();const ok=orig[2](x);if(ok)capture('bass',before,x);return ok};
+ const saveLocal=(ns,value)=>{const spec=specs.find(s=>s[0]===ns);if(!spec)return;state.writing=true;try{spec[3](value)}finally{state.writing=false}};
+ const fetchAll=async()=>{let rows=[],from=0;while(true){const {data,error}=await client.from(TABLE).select('namespace,path_key,value,updated_at').eq('user_id',state.uid).order('namespace').order('path_key').range(from,from+999);if(error)throw error;rows.push(...(data||[]));if(!data||data.length<1000)break;from+=1000;if(from>20000)throw Error('同步資料量超出安全限制')}return rows};
+ const merge=(rows,seed)=>{const grouped=new Map(specs.map(s=>[s[0],new Map()]));for(const r of rows){if(!grouped.has(r.namespace))continue;grouped.get(r.namespace).set(r.path_key,r.value);state.known.set(r.namespace+'|'+r.path_key,JSON.stringify(r.value))}
+  for(const [ns,,read] of specs){const local=read(),remote=grouped.get(ns),old=flat(local),combined={};for(const [key,value] of old){if(!remote.has(key)&&seed)state.queue.set(ns+'|'+key,{namespace:ns,path_key:key,value})}for(const [key,value] of old)set(combined,JSON.parse(key),value);for(const [key,value] of remote){if(!state.queue.has(ns+'|'+key))set(combined,JSON.parse(key),value)}saveLocal(ns,combined)}
+ };
+ let scheduled=null;
+ function schedule(){if(scheduled)return;scheduled=setTimeout(()=>{scheduled=null;flush()},700)}
+ async function flush(){if(!state.ready||state.busy||!state.uid||!client||!navigator.onLine)return;state.busy=true;try{while(state.queue.size){const batch=[...state.queue.entries()].slice(0,50);const rows=batch.map(([,v])=>({...v,user_id:state.uid}));const {error}=await client.from(TABLE).upsert(rows,{onConflict:'user_id,namespace,path_key'});if(error)throw error;for(const [key,v] of batch){if(state.queue.get(key)===v){state.queue.delete(key);state.known.set(key,JSON.stringify(v.value))}}}state.errors=0;status('☁️ 已同步')}catch(e){state.errors++;status('⚠️ 同步未完成：'+e.message);console.warn('learning sync:',e)}finally{state.busy=false}}
+ async function refresh(){const uid=current();if(!uid||!client){state.ready=false;state.uid=null;state.queue.clear();state.known.clear();status('登入後自動同步');return}if(state.uid!==uid){state.uid=uid;state.ready=false;state.queue.clear();state.known.clear();try{const rows=await fetchAll();if(current()!==uid)return;merge(rows,true);state.ready=true;status('☁️ 已連線，正在同步…');await flush();if(['study','studyCalendar','studyGrowth','studyDiary','studyFocus','bassGrowth','bassLog'].includes(page))render()}catch(e){status('⚠️ 雲端連線失敗：'+e.message);console.warn(e)}return}
+ if(!state.ready)return;try{const rows=await fetchAll();if(current()!==uid)return;const changed=[];for(const r of rows){const k=r.namespace+'|'+r.path_key,v=JSON.stringify(r.value);if(state.known.get(k)!==v&&!state.queue.has(k)){state.known.set(k,v);changed.push(r)}}if(changed.length){const grouped=new Map();for(const r of changed){if(!grouped.has(r.namespace))grouped.set(r.namespace,{});set(grouped.get(r.namespace),JSON.parse(r.path_key),r.value)}for(const [ns,patch] of grouped){const spec=specs.find(s=>s[0]===ns),base=spec[2]();for(const [key,val] of flat(patch))set(base,JSON.parse(key),val);saveLocal(ns,base)}status('☁️ 已更新其他裝置的進度');if(['study','studyCalendar','studyGrowth','studyDiary','studyFocus','bassGrowth','bassLog'].includes(page)&&document.activeElement?.tagName!=='TEXTAREA'&&document.activeElement?.tagName!=='INPUT')render()}}catch(e){status('⚠️ 同步檢查失敗：'+e.message)}}
+ function install(){if(document.getElementById('autoSyncStatus'))return;const el=document.createElement('div');el.id='autoSyncStatus';el.className='auto-sync-status';el.setAttribute('role','status');el.textContent='☁️ 連線中…';document.querySelector('.account')?.appendChild(el);refresh();state.timer=setInterval(()=>{refresh().then(()=>flush())},POLL);window.addEventListener('online',()=>{refresh().then(()=>flush())});window.addEventListener('focus',()=>{refresh().then(()=>flush())});if(client?.auth)client.auth.onAuthStateChange(()=>setTimeout(refresh,250))}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install);else install();
+})();

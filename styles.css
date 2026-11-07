@@ -84,3 +84,5 @@ button{transition:transform .2s ease,box-shadow .2s ease,background .2s ease}but
 #simpleDiaryText{display:block;width:100%;margin:12px 0;min-height:190px}
 #simpleDiaryDate{display:block;margin:10px 0 22px}
 @media(max-width:650px){.simple-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.simple-tabs button{font-size:12px;padding:9px 6px}}
+
+.auto-sync-status{font-size:.73rem;color:#536b82;max-width:200px;line-height:1.4;margin-left:8px}
