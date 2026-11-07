@@ -59,3 +59,6 @@ button{transition:transform .2s ease,box-shadow .2s ease,background .2s ease}but
  #nav .nav-link{white-space:normal}
  .sidebar .sidefoot{display:none}
 }
+/* Bass growth module */
+.bg-skill-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:14px 0}.bg-skill{border:1px solid #dfe4f1;background:#f8f9fd;border-radius:14px;padding:13px;text-align:left;color:#39435e;display:flex;flex-direction:column;gap:6px;cursor:pointer}.bg-skill small{font-size:11px;opacity:.65}.bg-skill span{font-size:12px;opacity:.75}.bg-skill.bg-unlocked,.bg-badge.bg-unlocked{border-color:#b2a0e9;background:#f0eaff}.bg-badge{display:inline-block;border:1px solid #dfe4f1;border-radius:20px;padding:9px;margin:5px;background:#f5f6f9}.bg-groove{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:5px;margin:14px 0}.bg-groove button{padding:7px 2px;font-size:12px}.bg-sight{font-size:35px;letter-spacing:10px;margin:20px 0;line-height:1.5}.bg-daily{margin:10px 0}audio{max-width:100%;display:block;margin:10px 0}
+@media(max-width:640px){.bg-skill-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.bg-groove{grid-template-columns:repeat(4,minmax(0,1fr))}}
