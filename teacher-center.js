@@ -13,6 +13,7 @@ async function teacherLoadPairs(){
  if(chosen)await loadPairData();
 }
 async function teacherSelectStudent(id){
+ if(role!=='teacher')return;
  const p=teacherPairs.find(p=>p.student_id===id);if(!p)return;
  teacherSelectedId=id;pair=p;await loadPairData();
  if(page==='teacherCenter')teacherCenter();else render();
