@@ -1,0 +1,16 @@
+弦間小日子｜學習成長視覺化修正版
+
+改動：
+- 「學習成長」改成 Bass／縫紉／鉤針分頁，每個技能顯示成連線節點。
+- 點節點調整 Lv.0–5、填寫作品或回饋，保留原有 xpRead/xpSave 的 skills 資料格式。
+- 原本的週回顧和雲端備份區塊保留；Bass 獨立的 110+22 技能圖鑑亦保留。
+- 其他頁面、老師配對及既有資料表不修改。
+
+安裝：
+1. 備份網站檔案，並匯出學習手帳 JSON。
+2. 將本 ZIP 中 study-simple.js 與 styles.css 上傳至 GitHub 儲存庫，覆蓋同名檔案。其他檔案可以不覆蓋。
+3. 重新整理網頁（Ctrl+Shift+R），進入「我的學習 > 學習成長」。
+4. 若右上角仍顯示 Could not find table public.learning_sync_fields，請在 Supabase 正確專案的 SQL Editor 執行 ZIP 中 supabase-auto-sync.sql。此 SQL 會建立專用資料表與 RLS 政策；若已建立，不需重複執行。執行後重新整理網站並檢查帳號登入與同步狀態。
+5. 請用電腦及手機登入同一帳號，先測試一個技能等級是否雙向同步，再正式使用。
+
+驗證範圍：已檢查 JS 語法、ZIP 完整性；未能連線至使用者正式 Supabase 驗證跨裝置同步。

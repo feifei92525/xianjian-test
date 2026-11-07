@@ -1,0 +1,20 @@
+弦間小日子｜多學生老師教學中心（測試版）
+
+1. 請先備份目前 GitHub 網站和 Supabase 資料。
+2. 在網站使用的 Supabase 專案 SQL Editor 執行 supabase-multi-student-teacher.sql。
+   注意：先前的 supabase-auto-sync.sql 必須已成功執行，learning_sync_fields 資料表需存在。
+3. 上傳壓縮檔內所有網站檔案到 GitHub Pages 專案根目錄，覆蓋同名檔案，保留新增 teacher-center.js。
+4. 重新整理頁面，使用老師帳號登入，在「老師與互動 → 老師教學中心」選擇學生。
+5. 已配對的學生會自動出現在清單；切換學生後，聯絡簿、挑戰、印章和練習日誌會使用該學生的配對。
+
+配對資料：沿用原本 public.music_pairs，老師可有多筆 teacher_id 相同、student_id 不同的紀錄。
+本版不提供公開搜尋或自助配對；請沿用原本由管理員在 Supabase 建立配對的流程。
+
+資料安全：SQL 僅新增老師對已配對學生的 practice_days 及 bass namespace 技能紀錄的 SELECT 政策。
+學生私人 study/planner 同步資料不會因這份 SQL 開放給老師。
+老師中心內學生 Bass 技能資料為唯讀；老師對配對挑戰和印章的原有權限不變。
+
+注意：如果現有 music_pairs 設定限制每位老師只能有一筆紀錄（例如 teacher_id UNIQUE），需先確認現有資料庫限制；本版不會擅自刪除限制或既有配對。
+若老師看不到第二位學生，請檢查 music_pairs RLS SELECT 政策是否允許老師讀取自己的所有配對紀錄。
+
+本版已執行 JS 語法檢查與 ZIP 完整性檢查，但未連線至你的正式 Supabase 測試；請先用兩個測試學生帳號驗證資料隔離與切換。
