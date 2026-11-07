@@ -62,3 +62,25 @@ button{transition:transform .2s ease,box-shadow .2s ease,background .2s ease}but
 /* Bass growth module */
 .bg-skill-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:14px 0}.bg-skill{border:1px solid #dfe4f1;background:#f8f9fd;border-radius:14px;padding:13px;text-align:left;color:#39435e;display:flex;flex-direction:column;gap:6px;cursor:pointer}.bg-skill small{font-size:11px;opacity:.65}.bg-skill span{font-size:12px;opacity:.75}.bg-skill.bg-unlocked,.bg-badge.bg-unlocked{border-color:#b2a0e9;background:#f0eaff}.bg-badge{display:inline-block;border:1px solid #dfe4f1;border-radius:20px;padding:9px;margin:5px;background:#f5f6f9}.bg-groove{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:5px;margin:14px 0}.bg-groove button{padding:7px 2px;font-size:12px}.bg-sight{font-size:35px;letter-spacing:10px;margin:20px 0;line-height:1.5}.bg-daily{margin:10px 0}audio{max-width:100%;display:block;margin:10px 0}
 @media(max-width:640px){.bg-skill-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.bg-groove{grid-template-columns:repeat(4,minmax(0,1fr))}}
+/* Simple study: split responsibilities into five screens without touching existing data. */
+#content > section[hidden]{display:none!important}
+.simple-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 8px}
+.simple-tabs button{background:#fff;color:#526174;border:1px solid #d9e1eb;border-radius:999px;padding:9px 13px;font-size:13px}
+.simple-tabs button.selected{background:#eae3fa;color:#59478b;border-color:#b7a4e3;font-weight:700}
+.simple-description{color:#69798a;font-size:13px;margin:0 0 16px}
+.simple-progress{padding:13px 15px;background:#f4f0fc;border-radius:12px;margin:14px 0}
+.simple-track{background:#ddd6ec;height:9px;border-radius:20px;overflow:hidden;margin-top:8px}
+.simple-track span{display:block;background:#9678ce;height:100%;border-radius:20px}
+.simple-today .xp-controls{display:none!important}
+.simple-today .xp-task{padding:14px 4px}
+.simple-today .xp-task-head{margin-bottom:0}
+.simple-today .study-hero p,.simple-today .card:nth-of-type(1)>.study-muted{display:none}
+.simple-today .card .study-tabs{margin:12px 0}
+.simple-today .card [data-xp-mode]{font-size:12px;padding:8px 12px}
+.simple-focus #xpClock{font-size:clamp(36px,8vw,72px);text-align:center;padding:12px 0}
+.simple-focus #simpleFocusTask{width:100%;max-width:520px}
+.simple-focus .study-hero p{display:none}
+.simple-calendar .xp-task{border-bottom:1px solid #e1e6ed}
+#simpleDiaryText{display:block;width:100%;margin:12px 0;min-height:190px}
+#simpleDiaryDate{display:block;margin:10px 0 22px}
+@media(max-width:650px){.simple-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.simple-tabs button{font-size:12px;padding:9px 6px}}
